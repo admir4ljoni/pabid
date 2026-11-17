@@ -1,0 +1,54 @@
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--paper);
+  cursor: pointer;
+  animation: leave 0.4s 0.95s var(--ease-out) forwards;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  font-size: clamp(2rem, 1rem + 4vw, 3.5rem);
+  color: var(--ink);
+  animation: settle 0.9s var(--ease-out) both;
+}
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: 1.6em;
+  aspect-ratio: 1;
+  border-radius: 0.4em;
+  background: var(--brand);
+  color: var(--on-brand);
+  animation: tile 0.45s var(--ease-out) both;
+}
+.mark svg { width: 64%; height: 64%; }
+
+/* The three wind strokes draw in left to right, one after another. */
+.mark path {
+  stroke-dasharray: 30;
+  stroke-dashoffset: 30;
+  animation: draw 0.5s var(--ease-out) forwards;
+}
+.mark path:nth-child(1) { animation-delay: 0.35s; }
+.mark path:nth-child(2) { animation-delay: 0.2s; }
+.mark path:nth-child(3) { animation-delay: 0.27s; }
+
+.word {
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  clip-path: inset(0 100% 0 0);
+  animation: wipe 0.55s 0.3s var(--ease-out) forwards;
+}
+
+@keyframes tile { from { scale: 0.6; opacity: 0; } }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes wipe { to { clip-path: inset(0 0 0 0); } }
+@keyframes settle { from { translate: 0 0.15em; } }
+@keyframes leave { to { opacity: 0; visibility: hidden; } }

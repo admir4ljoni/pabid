@@ -1,0 +1,211 @@
+/* ---------- Hero: the answer first, then the day's shape ---------- */
+.hero {
+  display: grid;
+  gap: var(--s6);
+  padding-block: var(--s8) var(--s6);
+}
+
+.statement { display: grid; gap: var(--s4); }
+.statement h1 {
+  font-size: var(--fs-hero);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  max-width: 17ch;
+}
+.lede {
+  font-size: var(--fs-md);
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 var(--s5);
+}
+.facts > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s3);
+  padding-block: var(--s3);
+  border-top: 1px solid var(--line);
+}
+.facts dt { font-size: var(--fs-sm); color: var(--muted); font-weight: 500; }
+.facts dd { font-size: var(--fs-lg); font-weight: 700; letter-spacing: -0.01em; }
+.facts small { font-size: var(--fs-sm); font-weight: 500; color: var(--muted); }
+
+@media (min-width: 52rem) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr) 16rem;
+    column-gap: var(--s8);
+  }
+  .facts { grid-template-columns: 1fr; align-self: end; }
+  .picker, .forecast { grid-column: 1 / -1; }
+}
+
+/* City picker: scrolls sideways on phones, wraps on wide screens. */
+.picker {
+  display: flex;
+  gap: var(--s2);
+  overflow-x: auto;
+  margin-inline: calc(-1 * var(--gutter));
+  padding: var(--s1) var(--gutter);
+  scrollbar-width: none;
+}
+.picker button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  min-height: 44px;
+  padding: var(--s2) var(--s3);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.picker button:hover { border-color: var(--brand); }
+.picker button .num { color: var(--muted); font-weight: 500; }
+.picker button[aria-pressed='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+.picker button[aria-pressed='true'] .num { color: inherit; }
+
+@media (min-width: 52rem) {
+  .picker { flex-wrap: wrap; margin-inline: 0; padding-inline: 0; overflow: visible; }
+}
+
+/* ---------- Forecast strip: the page's one orchestrated motion ---------- */
+.forecast {
+  display: grid;
+  gap: var(--s5);
+  padding: var(--s5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.bars {
+  display: grid;
+  padding-bottom: 1.5em; /* room for the "Sekarang" marker */
+  grid-template-columns: repeat(12, 1fr);
+  gap: clamp(2px, 0.6vw, 8px);
+}
+
+.bars li {
+  display: flex;
+  flex-direction: column-reverse; /* DOM: time first for screen readers; visually below the bar */
+  gap: var(--s2);
+  min-width: 0;
+}
+
+.track {
+  position: relative;
+  height: clamp(6rem, 16vw, 9rem);
+  margin-top: var(--s5);
+  border-bottom: 1px solid var(--line);
+}
+
+.bar {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: calc(var(--h) * 100%);
+  border-radius: 4px 4px 0 0;
+  background: var(--c);
+  transform-origin: bottom;
+  animation: grow 0.6s var(--ease-out) calc(var(--delay) + var(--i) * 45ms) both;
+}
+
+.value {
+  position: absolute;
+  inset-inline: 0;
+  bottom: calc(var(--h) * 100% + var(--s1));
+  text-align: center;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  animation: fade 0.3s calc(var(--delay) + var(--i) * 45ms + 250ms) both;
+}
+
+.time {
+  position: relative;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.bars li[aria-current] .time { color: var(--ink); font-weight: 700; }
+.bars li[aria-current] .time::after {
+  content: 'Sekarang' / '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  translate: -50%;
+  font-weight: 500;
+  color: var(--brand);
+}
+.bars li[aria-current] .track { border-bottom: 2px solid var(--ink); }
+
+/* Phones: label every third slot so times never collide; others stay readable to screen readers. */
+@media (max-width: 40rem) {
+  .bars li:not(:nth-child(3n + 1), [aria-current]) .time {
+    clip-path: inset(50%);
+    height: 1lh;
+  }
+  .value { font-size: 0.6875rem; }
+}
+
+@keyframes grow { from { scale: 1 0; } }
+@keyframes fade { from { opacity: 0; } }
+
+.caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s4);
+  padding-top: var(--s4);
+  border-top: 1px solid var(--line);
+}
+.actions { display: flex; flex-wrap: wrap; gap: var(--s2); }
+
+/* ---------- Below the fold ---------- */
+.section { padding-top: var(--s9); }
+.section h2 { font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.25rem); font-weight: 800; }
+
+.features {
+  display: grid;
+  gap: 0 var(--s6);
+  margin-top: var(--s6);
+}
+@media (min-width: 40rem) { .features { grid-template-columns: repeat(2, 1fr); } }
+
+.feature {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--s1) var(--s4);
+  padding-block: var(--s5);
+  border-top: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+}
+.feature svg { grid-row: span 2; color: var(--brand); margin-top: 2px; }
+.featureTitle { font-size: var(--fs-md); font-weight: 700; }
+.featureText { color: var(--muted); }
+.feature:hover .featureTitle { text-decoration: underline; text-underline-offset: 0.2em; }
+
+.about {
+  display: grid;
+  gap: var(--s5);
+  align-items: start;
+}
+@media (min-width: 52rem) { .about { grid-template-columns: 1fr 1fr; column-gap: var(--s8); } }
+.aboutCopy { display: grid; gap: var(--s4); justify-items: start; font-size: var(--fs-md); line-height: 1.55; }
+.aboutCopy a { font-size: var(--fs-base); font-weight: 600; }
